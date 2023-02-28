@@ -43,13 +43,20 @@ void setup() {
 int getDepth(){
   int depth = 0;
   digitalWrite(trigPin,HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
 
+  unsigned long timeout = micros();
   while(!digitalRead(echoPin)){ 
+    unsigned long timeout2 = micros() - timeout;
+    if(timeout2 > 200000){
+      digitalWrite(trigPin,HIGH);
+      delayMicroseconds(11);
+      digitalWrite(trigPin, LOW);
+      timeout = micros();
+    }
   }
   unsigned long t1 = micros();
-
   while(digitalRead(echoPin)){
   }
   unsigned long t2 = micros();

@@ -50,6 +50,7 @@ int getDepth(){
   while(!digitalRead(echoPin)){ 
     unsigned long timeout2 = micros() - timeout;
     if(timeout2 > 200000){
+      Serial.println("Depth Sensor Timeout");
       digitalWrite(trigPin,HIGH);
       delayMicroseconds(11);
       digitalWrite(trigPin, LOW);
@@ -72,6 +73,7 @@ void loop() {
   depth = getDepth();
 
   if(depth > 20){
+    digitalWrite(25, LOW);
     digitalWrite(A1, HIGH);
     digitalWrite(A2, LOW);
     analogWrite(APWM, 50);
@@ -79,6 +81,7 @@ void loop() {
     digitalWrite(B2, LOW);
     analogWrite(BPWM, 100);
   }else{
+    digitalWrite(25, HIGH);
     digitalWrite(A1, LOW);
     digitalWrite(A2, HIGH);
     analogWrite(APWM, 100);

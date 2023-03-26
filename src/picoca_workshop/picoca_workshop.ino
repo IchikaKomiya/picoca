@@ -1,6 +1,7 @@
 // LED
 #define LeftLED 11
 #define RightLED 10
+#define BoardLED 25
 
 // 距離センサ
 #define echoPin 15 // Echo Pin
@@ -20,16 +21,25 @@ int V = 340;
 #define Left 0
 #define Right 1
 
+// 距離センサに計測用信号を送るように命令
 void sendTrigger(){
   digitalWrite(trigPin,HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
 }
 
 // 距離センサから距離を読み取る（単位:cm）
 int getDepth(){
   sendTrigger();
+
+  unsigned long timeout = micros();
   while(!digitalRead(echoPin)){ 
+    unsigned long timeout2 = micros() - timeout;
+    if(timeout2 > 200000){
+      Serial.println("Depth Sensor Timeout");
+      sendTrigger();
+      timeout = micros();
+    }
   }
   unsigned long t1 = micros();
 
@@ -37,7 +47,7 @@ int getDepth(){
   }
   unsigned long t2 = micros();
   unsigned long t = t2 - t1;
-  return V * t /20000;
+  return V * t / 20000;
 }
 
 void drive_A( int v){
@@ -68,8 +78,8 @@ void drive_B( int v){
 
 void setup() {
   // Raspberry Pi Pico内蔵LEDピンを出力に設定して点灯
-  pinMode(25, OUTPUT);
-  digitalWrite(25, HIGH);
+  pinMode(BoardLED, OUTPUT);
+  digitalWrite(BoardLED, HIGH);
   // LEDに接続されているピンを出力に設定
   pinMode(LeftLED, OUTPUT);
   pinMode(RightLED, OUTPUT);
@@ -85,31 +95,34 @@ void setup() {
 
   Serial.begin(9600); // PCとシリアル接続を開始
   // パソコンから外して使用するときはコメントアウト
-  while (!Serial);    // PCとシリアル接続されるまで待機
+  // while (!Serial);    // PCとシリアル接続されるまで待機
   // 距離センサ用にピンの入出力を設定
   pinMode(echoPin, INPUT);
   pinMode(trigPin, OUTPUT);
   // PCに"Start Pico!"を書き込む
-  Serial.println("Start Pico!");
+  // Serial.println("Start Pico!");
 }
 
 void loop() {
   int depth = 0;
-  depth = getDepth();
 
-  Serial.print(depth);
-  Serial.println("cm");
+  while (true) {
+    depth = getDepth();
+    Serial.print(depth);
+    Serial.println("cm");
 
-  if(depth < 20){
-    digitalWrite(LeftLED, HIGH);
-    digitalWrite(RightLED, HIGH);
-    drive_A(50);
-    drive_B(50);
-  }else{
-    digitalWrite(LeftLED, LOW);
-    digitalWrite(RightLED, LOW);
-    drive_A(-50);
-    drive_B(-50);
+    // depthの値に合わせてモーターの動きを変更
+    if(depth < 20){
+      digitalWrite(LeftLED, HIGH);
+      digitalWrite(RightLED, HIGH);
+      drive_A(150);
+      drive_B(150);
+    }else{
+      digitalWrite(LeftLED, LOW);
+      digitalWrite(RightLED, LOW);
+      drive_A(-150);
+      drive_B(-150);
+    }
+    delay(500);
   }
-  delay(500);
 }

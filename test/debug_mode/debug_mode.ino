@@ -12,7 +12,7 @@
 
 int V = 340;
 
-//LED
+// LED設定
 #define LeftLED 11
 #define RightLED 10
 #define BoardLED 25
@@ -40,20 +40,23 @@ void setup() {
   Serial.println("Start Pico");
 }
 
-int getDepth(){
-  int depth = 0;
+// 距離センサに計測用信号を送るように命令
+void sendTrigger(){
   digitalWrite(trigPin,HIGH);
   delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
+}
+
+int getDepth(){
+  int depth = 0;
+  sendTrigger();
 
   unsigned long timeout = micros();
   while(!digitalRead(echoPin)){ 
     unsigned long timeout2 = micros() - timeout;
     if(timeout2 > 200000){
       Serial.println("Depth Sensor Timeout");
-      digitalWrite(trigPin,HIGH);
-      delayMicroseconds(11);
-      digitalWrite(trigPin, LOW);
+      sendTrigger();
       timeout = micros();
     }
   }
@@ -62,7 +65,7 @@ int getDepth(){
   }
   unsigned long t2 = micros();
   unsigned long t = t2 - t1;
-  depth = V * t /20000;
+  depth = V * t / 20000;
   Serial.print(depth);
   Serial.println("cm");
   return depth;
@@ -73,7 +76,7 @@ void loop() {
   depth = getDepth();
 
   if(depth > 20){
-    digitalWrite(25, LOW);
+    digitalWrite(BoardLED, LOW);
     digitalWrite(A1, HIGH);
     digitalWrite(A2, LOW);
     analogWrite(APWM, 50);
@@ -81,7 +84,7 @@ void loop() {
     digitalWrite(B2, LOW);
     analogWrite(BPWM, 100);
   }else{
-    digitalWrite(25, HIGH);
+    digitalWrite(BoardLED, HIGH);
     digitalWrite(A1, LOW);
     digitalWrite(A2, HIGH);
     analogWrite(APWM, 100);

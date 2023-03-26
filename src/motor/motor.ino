@@ -9,7 +9,12 @@
 #define Left 0
 #define Right 1
 
-void drive_A( int v){
+// LED設定
+#define LeftLED 11
+#define RightLED 10
+#define BoardLED 25
+
+void drive_A(int v){
   if(v>0){
     v = min(v, 255);
     digitalWrite(A1, HIGH);
@@ -22,7 +27,7 @@ void drive_A( int v){
   analogWrite(PWM_A, abs(v));
 }
 
-void drive_B( int v){
+void drive_B(int v){
   if(v>0){
     v = min(v, 255);
     digitalWrite(B1, HIGH);
@@ -36,8 +41,8 @@ void drive_B( int v){
 }
 
 void setup() {
-  pinMode(25, OUTPUT);
-  digitalWrite(25, HIGH);
+  pinMode(BoardLED, OUTPUT);
+  digitalWrite(BoardLED, HIGH);
   //モーターのピンを出力に変更
   pinMode(A1, OUTPUT);
   pinMode(A2, OUTPUT);
@@ -49,10 +54,10 @@ void setup() {
 
 void loop() {
   // モーターを動かす
-  drive_A(50);
-  drive_B(50);
+  drive_A(150);
+  drive_B(150);
   delay(1000);
-  drive_A(-50);
-  drive_B(-50);
+  drive_A(-150);
+  drive_B(-150);
   delay(1000);
 }

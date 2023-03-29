@@ -1,3 +1,6 @@
+/*
+ * GPIO設定
+ */
 // LED
 #define LeftLED 11
 #define RightLED 10
@@ -6,8 +9,6 @@
 // 距離センサ
 #define echoPin 15 // Echo Pin
 #define trigPin 14 // Trigger Pin
-// 音速の設定
-int V = 340;
 
 // モーター
 #define PWM_A 0
@@ -20,6 +21,12 @@ int V = 340;
 
 #define Left 0
 #define Right 1
+
+/*
+ * 各種変数
+ */
+// 音速の設定
+int V = 340;
 
 // PID定数
 double K_p = 0.06;
@@ -35,20 +42,20 @@ double last_error = 0.0;
 double error_sum = 0.0;
 
 // 距離センサに計測用信号を送るように命令
-void sendTrigger(){
+void sendTrigger() {
   digitalWrite(trigPin,HIGH);
   delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
 }
 
 // 距離センサから距離を読み取る（単位:cm）
-int getDepth(){
+int getDepth() {
   sendTrigger();
 
   unsigned long timeout = micros();
-  while(!digitalRead(echoPin)){ 
+  while(!digitalRead(echoPin)) { 
     unsigned long timeout2 = micros() - timeout;
-    if(timeout2 > 200000){
+    if(timeout2 > 200000) {
       Serial.println("Depth Sensor Timeout");
       sendTrigger();
       timeout = micros();
@@ -56,7 +63,8 @@ int getDepth(){
   }
   unsigned long t1 = micros();
 
-  while(digitalRead(echoPin)){
+  while(digitalRead(echoPin)) {
+    ;
   }
   unsigned long t2 = micros();
   unsigned long t = t2 - t1;
@@ -65,12 +73,12 @@ int getDepth(){
   return depth;
 }
 
-void drive_A( int v){
-  if(v>0){
+void drive_A(int v) {
+  if(v>0) {
     v = min(v, 255);
     digitalWrite(A1, HIGH);
     digitalWrite(A2, LOW);
-  }else{
+  } else {
     v = max(v, -255);
     digitalWrite(A1, LOW);
     digitalWrite(A2, HIGH);
@@ -78,12 +86,12 @@ void drive_A( int v){
   analogWrite(PWM_A, abs(v));
 }
 
-void drive_B( int v){
-  if(v>0){
+void drive_B(int v) {
+  if(v>0) {
     v = min(v, 255);
     digitalWrite(B1, HIGH);
     digitalWrite(B2, LOW);
-  }else{
+  } else {
     v = max(v, -255);
     digitalWrite(B1, LOW);
     digitalWrite(B2, HIGH);
@@ -138,6 +146,7 @@ void loop() {
 
     // 制御周期がまだ経過していない場合は何もしない
     if (elapsed_time < dt) {
+      // 1ms待つ
       delay(1);
     } else {
       // 距離センサの値を取得

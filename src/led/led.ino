@@ -18,7 +18,7 @@ void setup() {
 
 void loop() {
   // LEDを5回点滅させる
-  for(int i=0; i<5; i++){
+  for (int i = 0; i < 5; i++) {
     // LEDを点灯
     digitalWrite(LeftLED, HIGH);
     digitalWrite(RightLED, HIGH);
@@ -29,7 +29,7 @@ void loop() {
     digitalWrite(RightLED, LOW);
     // 0.5秒待機(500ミリ秒)
     delay(500);
-  } 
+  }
   // 2秒待つ
   delay(2000);
 }

@@ -7,8 +7,8 @@
 #define B2 8
 
 // SR-04
-#define echoPin 15 // Echo Pin
-#define trigPin 14 // Trigger Pin
+#define echoPin 15  // Echo Pin
+#define trigPin 14  // Trigger Pin
 
 int V = 340;
 
@@ -36,32 +36,33 @@ void setup() {
 
   // Serial通信をする場合
   Serial.begin(9600);
-  while (!Serial);
+  while (!Serial)
+    ;
   Serial.println("Start Pico");
 }
 
 // 距離センサに計測用信号を送るように命令
-void sendTrigger(){
-  digitalWrite(trigPin,HIGH);
+void sendTrigger() {
+  digitalWrite(trigPin, HIGH);
   delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
 }
 
-int getDepth(){
+int getDepth() {
   int depth = 0;
   sendTrigger();
 
   unsigned long timeout = micros();
-  while(!digitalRead(echoPin)){ 
+  while (!digitalRead(echoPin)) {
     unsigned long timeout2 = micros() - timeout;
-    if(timeout2 > 200000){
+    if (timeout2 > 200000) {
       Serial.println("Depth Sensor Timeout");
       sendTrigger();
       timeout = micros();
     }
   }
   unsigned long t1 = micros();
-  while(digitalRead(echoPin)){
+  while (digitalRead(echoPin)) {
   }
   unsigned long t2 = micros();
   unsigned long t = t2 - t1;
@@ -75,7 +76,7 @@ void loop() {
   int depth;
   depth = getDepth();
 
-  if(depth > 20){
+  if (depth > 20) {
     digitalWrite(BoardLED, LOW);
     digitalWrite(A1, HIGH);
     digitalWrite(A2, LOW);
@@ -83,7 +84,7 @@ void loop() {
     digitalWrite(B1, HIGH);
     digitalWrite(B2, LOW);
     analogWrite(BPWM, 100);
-  }else{
+  } else {
     digitalWrite(BoardLED, HIGH);
     digitalWrite(A1, LOW);
     digitalWrite(A2, HIGH);

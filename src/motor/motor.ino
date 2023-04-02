@@ -14,12 +14,12 @@
 #define RightLED 10
 #define BoardLED 25
 
-void drive_A(int v){
-  if(v>0){
+void drive_A(int v) {
+  if (v > 0) {
     v = min(v, 255);
     digitalWrite(A1, HIGH);
     digitalWrite(A2, LOW);
-  }else{
+  } else {
     v = max(v, -255);
     digitalWrite(A1, LOW);
     digitalWrite(A2, HIGH);
@@ -27,12 +27,12 @@ void drive_A(int v){
   analogWrite(PWM_A, abs(v));
 }
 
-void drive_B(int v){
-  if(v>0){
+void drive_B(int v) {
+  if (v > 0) {
     v = min(v, 255);
     digitalWrite(B1, HIGH);
     digitalWrite(B2, LOW);
-  }else{
+  } else {
     v = max(v, -255);
     digitalWrite(B1, LOW);
     digitalWrite(B2, HIGH);

@@ -7,8 +7,8 @@
 #define BoardLED 25
 
 // 距離センサ
-#define echoPin 15 // Echo Pin
-#define trigPin 14 // Trigger Pin
+#define echoPin 15  // Echo Pin
+#define trigPin 14  // Trigger Pin
 
 // モーター
 #define PWM_A 0
@@ -43,7 +43,7 @@ double error_sum = 0.0;
 
 // 距離センサに計測用信号を送るように命令
 void sendTrigger() {
-  digitalWrite(trigPin,HIGH);
+  digitalWrite(trigPin, HIGH);
   delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
 }
@@ -53,9 +53,9 @@ int getDepth() {
   sendTrigger();
 
   unsigned long timeout = micros();
-  while(!digitalRead(echoPin)) { 
+  while (!digitalRead(echoPin)) {
     unsigned long timeout2 = micros() - timeout;
-    if(timeout2 > 200000) {
+    if (timeout2 > 200000) {
       Serial.println("Depth Sensor Timeout");
       sendTrigger();
       timeout = micros();
@@ -63,7 +63,7 @@ int getDepth() {
   }
   unsigned long t1 = micros();
 
-  while(digitalRead(echoPin)) {
+  while (digitalRead(echoPin)) {
     ;
   }
   unsigned long t2 = micros();
@@ -74,7 +74,7 @@ int getDepth() {
 }
 
 void drive_A(int v) {
-  if(v>0) {
+  if (v > 0) {
     v = min(v, 255);
     digitalWrite(A1, HIGH);
     digitalWrite(A2, LOW);
@@ -87,7 +87,7 @@ void drive_A(int v) {
 }
 
 void drive_B(int v) {
-  if(v>0) {
+  if (v > 0) {
     v = min(v, 255);
     digitalWrite(B1, HIGH);
     digitalWrite(B2, LOW);
@@ -116,7 +116,7 @@ void setup() {
   pinMode(B2, OUTPUT);
   pinMode(PWM_B, OUTPUT);
 
-  Serial.begin(9600); // PCとシリアル接続を開始
+  Serial.begin(9600);  // PCとシリアル接続を開始
   // パソコンから外して使用するときはコメントアウト
   // while (!Serial);    // PCとシリアル接続されるまで待機
   // 距離センサ用にピンの入出力を設定
@@ -124,7 +124,6 @@ void setup() {
   pinMode(trigPin, OUTPUT);
   // PCに"Start Pico!"を書き込む
   Serial.println("Start Pico!");
-
 }
 
 void loop() {
@@ -139,7 +138,7 @@ void loop() {
   unsigned long last_time = millis();
 
   while (true) {
-    
+
     // 制御周期を計算
     unsigned long now = millis();
     unsigned long elapsed_time = now - last_time;

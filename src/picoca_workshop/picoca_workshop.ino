@@ -4,8 +4,8 @@
 #define BoardLED 25
 
 // 距離センサ
-#define echoPin 15 // Echo Pin
-#define trigPin 14 // Trigger Pin
+#define echoPin 15  // Echo Pin
+#define trigPin 14  // Trigger Pin
 // 音速の設定
 int V = 340;
 
@@ -22,20 +22,20 @@ int V = 340;
 #define Right 1
 
 // 距離センサに計測用信号を送るように命令
-void sendTrigger(){
-  digitalWrite(trigPin,HIGH);
+void sendTrigger() {
+  digitalWrite(trigPin, HIGH);
   delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
 }
 
 // 距離センサから距離を読み取る（単位:cm）
-int getDepth(){
+int getDepth() {
   sendTrigger();
 
   unsigned long timeout = micros();
-  while(!digitalRead(echoPin)){ 
+  while (!digitalRead(echoPin)) {
     unsigned long timeout2 = micros() - timeout;
-    if(timeout2 > 200000){
+    if (timeout2 > 200000) {
       Serial.println("Depth Sensor Timeout");
       sendTrigger();
       timeout = micros();
@@ -43,19 +43,19 @@ int getDepth(){
   }
   unsigned long t1 = micros();
 
-  while(digitalRead(echoPin)){
+  while (digitalRead(echoPin)) {
   }
   unsigned long t2 = micros();
   unsigned long t = t2 - t1;
   return V * t / 20000;
 }
 
-void drive_A( int v){
-  if(v>0){
+void drive_A(int v) {
+  if (v > 0) {
     v = min(v, 255);
     digitalWrite(A1, HIGH);
     digitalWrite(A2, LOW);
-  }else{
+  } else {
     v = max(v, -255);
     digitalWrite(A1, LOW);
     digitalWrite(A2, HIGH);
@@ -63,12 +63,12 @@ void drive_A( int v){
   analogWrite(PWM_A, abs(v));
 }
 
-void drive_B( int v){
-  if(v>0){
+void drive_B(int v) {
+  if (v > 0) {
     v = min(v, 255);
     digitalWrite(B1, HIGH);
     digitalWrite(B2, LOW);
-  }else{
+  } else {
     v = max(v, -255);
     digitalWrite(B1, LOW);
     digitalWrite(B2, HIGH);
@@ -93,7 +93,7 @@ void setup() {
   pinMode(B2, OUTPUT);
   pinMode(PWM_B, OUTPUT);
 
-  Serial.begin(9600); // PCとシリアル接続を開始
+  Serial.begin(9600);  // PCとシリアル接続を開始
   // パソコンから外して使用するときはコメントアウト
   // while (!Serial);    // PCとシリアル接続されるまで待機
   // 距離センサ用にピンの入出力を設定
@@ -112,12 +112,12 @@ void loop() {
     Serial.println("cm");
 
     // depthの値に合わせてモーターの動きを変更
-    if(depth < 20){
+    if (depth < 20) {
       digitalWrite(LeftLED, HIGH);
       digitalWrite(RightLED, HIGH);
       drive_A(150);
       drive_B(150);
-    }else{
+    } else {
       digitalWrite(LeftLED, LOW);
       digitalWrite(RightLED, LOW);
       drive_A(-150);

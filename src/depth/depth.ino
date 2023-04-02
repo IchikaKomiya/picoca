@@ -1,33 +1,33 @@
 #define LeftLED 11
 #define RightLED 10
 #define BoardLED 25
-#define echoPin 15 // Echo Pin
-#define trigPin 14 // Trigger Pin
+#define echoPin 15  // Echo Pin
+#define trigPin 14  // Trigger Pin
 
 // 音速の設定
 int V = 340;
 
 // 距離センサに計測用信号を送るように命令
-void sendTrigger(){
-  digitalWrite(trigPin,HIGH);
+void sendTrigger() {
+  digitalWrite(trigPin, HIGH);
   delayMicroseconds(11);
   digitalWrite(trigPin, LOW);
 }
 
 // 距離センサから距離を読み取る（単位:cm）
-int getDepth(){
+int getDepth() {
   sendTrigger();
 
   unsigned long timeout = micros();
-  while(!digitalRead(echoPin)){ 
+  while (!digitalRead(echoPin)) {
     unsigned long timeout2 = micros() - timeout;
-    if(timeout2 > 200000){
+    if (timeout2 > 200000) {
       sendTrigger();
       timeout = micros();
     }
   }
   unsigned long t1 = micros();
-  while(digitalRead(echoPin)){
+  while (digitalRead(echoPin)) {
   }
   unsigned long t2 = micros();
   unsigned long t = t2 - t1;
@@ -44,11 +44,12 @@ void setup() {
   digitalWrite(LeftLED, HIGH);
   digitalWrite(RightLED, HIGH);
 
-  Serial.begin(9600); // PCとシリアル接続を開始
+  Serial.begin(9600);  // PCとシリアル接続を開始
   /* 
    * USBを外し電池で扱う場合は、下記のwhile文をコメントアウト 
    */
-  while (!Serial);    // PCとシリアル接続されるまで待機
+  while (!Serial)
+    ;  // PCとシリアル接続されるまで待機
 
   // 距離センサ用にピンの入出力を設定
   pinMode(echoPin, INPUT);
@@ -57,19 +58,19 @@ void setup() {
 
 void loop() {
   int depth = 0;
-  while (true){
+  while (true) {
     // 距離センサの値を取得する
-    depth = getDepth();    
+    depth = getDepth();
 
     Serial.print(depth);
     Serial.println("cm");
 
     // もし距離センサが20cmより小さかったらLEDを点灯させる
-    if(depth < 20){
+    if (depth < 20) {
       digitalWrite(LeftLED, HIGH);
       digitalWrite(RightLED, HIGH);
       digitalWrite(BoardLED, HIGH);
-    }else{
+    } else {
       digitalWrite(LeftLED, LOW);
       digitalWrite(RightLED, LOW);
       digitalWrite(BoardLED, LOW);
